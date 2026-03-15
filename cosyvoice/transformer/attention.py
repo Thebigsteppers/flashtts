@@ -1,8 +1,3 @@
-# Copyright (c) 2019 Shigeki Karita
-#               2020 Mobvoi Inc (Binbin Zhang)
-#               2022 Xingchen Song (sxc19@mails.tsinghua.edu.cn)
-#               2024 Alibaba Inc (Xiang Lyu)
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at

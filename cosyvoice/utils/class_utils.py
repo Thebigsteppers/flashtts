@@ -1,6 +1,3 @@
-# Copyright [2023-11-28] <sxc19@mails.tsinghua.edu.cn, Xingchen Song>
-#            2024 Alibaba Inc (authors: Contributors)
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
