@@ -14,7 +14,9 @@
 
 ## 📦 System Architecture
 
-![FlashTTS Overview](asset/flashtts_overview.jpg)
+<p align="center">
+  <img src="asset/flashtts_overview.jpg" alt="FlashTTS Overview" width="85%" style="max-width: 85%; height: auto;" />
+</p>
 
 **Figure 1.** Architecture Overview of FlashTTS with Stacked Inputs Track Structure (Stage 1) and Multi-Token Prediction Training (Stage 2).
 
