@@ -12,6 +12,12 @@
 - **Cross-Lingual Intelligibility**: Preserved quality across languages
 - **Open Source**: Model code and checkpoints released for research and deployment
 
+## 🎧 Demo Page (Anonymous)
+
+You can listen to audio samples and interactive demos at the anonymous page:
+
+- **FlashTTS Demo (anonymous)**: [`https://anonymous.4open.science/w/flashtts_demo-7E57/`](https://anonymous.4open.science/w/flashtts_demo-7E57/)
+
 ## 📦 System Architecture
 
 <div align="center">
