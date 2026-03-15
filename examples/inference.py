@@ -37,7 +37,7 @@ logging.getLogger("matplotlib").setLevel(logging.WARNING)
 def get_args():
     p = argparse.ArgumentParser(description="FlashTTS inference")
     p.add_argument("--mode", default="flash_tts", choices=["flash_tts", "meanflow_only"],
-                   help="flash_tts: text + prompt_wav -> wav (uses CosyVoice2/FlashTTS). "
+                   help="flash_tts: text + prompt_wav -> wav (uses FlashTTS). "
                         "meanflow_only: token file + prompt_wav -> wav (uses jit_meanflow_xpred only).")
     p.add_argument("--model_dir", type=str, default=None,
                    help="Model directory (for flash_tts: dir with llm.pt and config; for meanflow_only not used)")
@@ -62,20 +62,20 @@ def get_args():
 
 
 def run_flash_tts(args):
-    """Text + prompt_wav -> wav using CosyVoice2 / FlashTTS."""
+    """Text + prompt_wav -> wav using FlashTTS."""
     import torch
     import torchaudio
-    from cosyvoice.cli.cosyvoice import CosyVoice2
+    from cosyvoice.cli.cosyvoice import FlashTTS
 
     os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
     device = torch.device("cuda" if torch.cuda.is_available() and args.gpu >= 0 else "cpu")
 
-    model_dir = args.model_dir or os.path.join(_REPO_ROOT, "pretrained_models", "CosyVoice2-0.5B")
+    model_dir = args.model_dir or os.path.join(_REPO_ROOT, "pretrained_models", "FlashTTS-0.5B")
     pretrained_dir = args.pretrained_model_dir or model_dir
     if not os.path.exists(model_dir):
         logging.warning("model_dir %s not found; you may need to set --model_dir and --pretrained_model_dir", model_dir)
 
-    model = CosyVoice2(model_dir, pretrained_model_dir=pretrained_dir, fp16=torch.cuda.is_available())
+    model = FlashTTS(model_dir, pretrained_model_dir=pretrained_dir, fp16=torch.cuda.is_available())
     sample_rate = model.sample_rate
     text = args.text or "Hello, this is a FlashTTS example."
     # Load prompt audio: frontend expects 16 kHz mono tensor [1, samples]

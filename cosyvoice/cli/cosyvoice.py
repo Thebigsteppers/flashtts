@@ -247,9 +247,9 @@ class CosyVoice:
             start_time = time.time()
 
 
-class CosyVoice2(CosyVoice):
+class FlashTTS(CosyVoice):
     
-    def __init__(self, model_dir, load_jit=False, load_trt=False, load_vllm=False, fp16=False, trt_concurrent=1, step=None, pretrained_model_dir="./code/CosyVoice/pretrained_models/CosyVoice2-0.5B", mtp_yaml=None, mtp_top_k=None, eos_top_k=None, temperature=None, inference_head_num=None):
+    def __init__(self, model_dir, load_jit=False, load_trt=False, load_vllm=False, fp16=False, trt_concurrent=1, step=None, pretrained_model_dir="./pretrained_models/FlashTTS-0.5B", mtp_yaml=None, mtp_top_k=None, eos_top_k=None, temperature=None, inference_head_num=None):
         self.instruct = True if '-Instruct' in model_dir else False
         self.model_dir = model_dir
         self.fp16 = fp16
@@ -388,3 +388,7 @@ class CosyVoice2(CosyVoice):
                 self.fp16,
             )
         del configs
+
+
+# Backward compatibility: alias for FlashTTS
+CosyVoice2 = FlashTTS

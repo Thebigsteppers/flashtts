@@ -1,15 +1,16 @@
-# FlashTTS: Fast Streaming Text-to-Speech with Low Latency
+# FlashTTS: Fast Streaming TTS with MTP Acceleration and X-pred Mean Flow Distillation
 
-A high-performance, streaming-capable Text-to-Speech (TTS) synthesis framework for real-time dialogue systems. FlashTTS combines a decoder-only LLM (multi-token prediction) with MeanFlow X-pred acoustic generation and HiFi-GAN vocoding. This repository is for anonymous review.
+**FlashTTS** is an open-source, low-latency streaming TTS framework that addresses these limitations. It introduces a **lagged multi-track architecture** that natively processes streaming text and speech inputs, eliminating sentence-level buffering. Acoustic generation is accelerated by integrating **parallel Multi-Token Prediction (MTP)** with an **X-pred mean flow matching** decoder, achieving high-fidelity token-to-mel in exactly **two function evaluations (2-NFE)**. By jointly optimizing input processing and decoding efficiency, FlashTTS offers a practical foundation for real-time speech dialogue systems. Experiments show substantially reduced **First-Packet Latency (325ms)** compared to robust streaming baselines, while preserving **zero-shot voice cloning** and **multi-lingual intelligibility**. Model code and checkpoints are released as open source.
 
 ## 🎯 Key Features
 
-- **Streaming Architecture**: Native support for streaming text and speech inputs/outputs without sentence-level buffering
-- **Low Latency**: First-packet latency reduced to 325ms while maintaining high-quality synthesis
-- **Efficient Inference**: 2-NFE (2 function evaluations) acoustic generation via X-pred mean flow matching
-- **Multi-lingual Support**: Zero-shot cross-lingual voice cloning capabilities
-- **Voice Cloning**: Few-shot speaker adaptation from reference audio
-- **Production Ready**: Optimized for real-time speech dialogue systems
+- **Native Streaming**: Lagged multi-track architecture for streaming text and speech I/O without sentence-level buffering
+- **MTP + X-pred Mean Flow**: Parallel Multi-Token Prediction with X-pred mean flow distillation for fast decoding
+- **2-NFE Acoustic Generation**: High-fidelity token-to-mel in exactly two function evaluations
+- **Low First-Packet Latency**: 325ms first-packet latency versus robust streaming baselines
+- **Zero-Shot Voice Cloning**: Strong few-shot speaker adaptation from reference audio
+- **Cross-Lingual Intelligibility**: Preserved quality across languages
+- **Open Source**: Model code and checkpoints released for research and deployment
 
 ## 📦 System Architecture
 
@@ -80,16 +81,16 @@ pip install -r requirements.txt
 
 ### Basic Inference (FlashTTS)
 
-FlashTTS uses a config YAML that defines only `llm` (no `flow`/`hift`); the MeanFlow backend is loaded automatically. The CLI exposes FlashTTS via the `CosyVoice2` class name for API compatibility.
+FlashTTS uses a config YAML that defines only `llm` (no `flow`/`hift`); the MeanFlow backend is loaded automatically.
 
 ```python
-from cosyvoice.cli.cosyvoice import CosyVoice2  # FlashTTS
+from cosyvoice.cli.cosyvoice import FlashTTS
 
 # model_dir: path to your model dir (with llm.pt, cosyvoice2*.yaml, etc.)
 # pretrained_model_dir: base dir for configs and MeanFlow/vocoder assets
-model = CosyVoice2('model_dir', pretrained_model_dir='path/to/pretrained')
+model = FlashTTS('model_dir', pretrained_model_dir='path/to/pretrained')
 
-# Zero-shot voice cloning with FlashTTS
+# Zero-shot voice cloning
 prompt_wav = 'path/to/prompt_audio.wav'  # 16kHz reference
 text = "Hello, this is a text-to-speech example."
 for output in model.inference_zero_shot(text, "", prompt_wav):
@@ -164,7 +165,7 @@ python -m jit_meanflow_xpred.infer.infer_meanflow_jit_xpred \
 flashtts_opensource/
 ├── cosyvoice/                      # FlashTTS core (LLM, frontend, CLI)
 │   ├── cli/                        # Command-line interfaces
-│   │   ├── cosyvoice.py           # FlashTTS entry point (CosyVoice2 API)
+│   │   ├── cosyvoice.py           # FlashTTS entry point
 │   │   ├── model.py               # FlashTTS model & inference wrapper
 │   │   └── frontend.py            # Audio/text frontend
 │   ├── llm/                        # Language model components
@@ -201,8 +202,6 @@ flashtts_opensource/
 ├── LICENSE                         # Apache 2.0 License
 ├── requirements.txt                # Python dependencies
 ├── .gitignore                      # Git ignore rules
-├── CONTRIBUTING.md                 # Contribution guidelines
-└── REFACTOR_SUMMARY.txt            # Refactoring notes
 ```
 
 ## 📝 Configuration
@@ -241,9 +240,7 @@ Extracted using CAMPPlus model:
 | Metric | Value | Notes |
 |--------|-------|-------|
 | First-Packet Latency | 325ms | With streaming architecture |
-| Real-Time Factor (RTF) | <0.3 | On NVIDIA 4090 GPU |
 | Mean Flow Steps | 2 | X-pred mean flow: few ODE steps |
-| Function Evaluations | 2-NFE | ODE + HiFi-GAN vocoder |
 | Token-to-Mel Time | ~100ms | On NVIDIA 4090 GPU |
 | Mel-to-Wave Time | ~50ms | HiFi-GAN vocoding |
 
@@ -258,10 +255,6 @@ Extracted using CAMPPlus model:
 - omegaconf
 - hyperpyyaml
 
-### Optional Dependencies
-- tensorrt (for TRT acceleration)
-- vllm (for LLM acceleration)
-
 See `requirements.txt` for complete list with specific versions.
 
 ## 📄 License
@@ -271,7 +264,7 @@ This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE) fi
 ## 🙏 Acknowledgments
 
 FlashTTS builds upon:
-- **CosyVoice**: TTS architecture and LLM decoder design (FlashTTS uses the inference stack)
+- **CosyVoice**: TTS backbone and LLM decoder design
 - **F5-TTS**: Flow matching backbone and generation
 - **HiFi-GAN**: High-fidelity neural vocoder architecture
 - **CAMPPlus**: Speaker embedding extraction via contrastive learning
